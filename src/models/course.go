@@ -1,20 +1,18 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Client struct {
-	gorm.Model
-	ID        string     `gorm:"primary_key" json:"id"`
-	Name      string     `db:"name" json:"name"`
-	CPF       string     `db:"area" json:"area"`
-	Email     string     `json:"teacher"`
-	CreatedAt *time.Time `db:"created_at" json:"created_at"`
-	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
+	ID        string         `gorm:"primary_key" json:"id"`
+	Name      string         `db:"name" json:"name"`
+	CPF       string         `db:"area" json:"area"`
+	Email     string         `json:"teacher"`
+	CreatedAt int64          `gorm:"autoCreateTime:milli" json:"created_at"`
+	UpdatedAt int64          `gorm:"autoUpdateTime:milli" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at"`
 }
 
 func (x *Client) FillDefaults() {

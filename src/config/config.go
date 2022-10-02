@@ -27,10 +27,13 @@ func Load() {
 		Port = 3001
 	}
 
-	StringDatabaseConnection = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local",
-		os.Getenv("DB_USUARIO"),
-		os.Getenv("DB_SENHA"),
-		os.Getenv("DB_NOME"),
+	StringDatabaseConnection = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_SSL"),
 	)
-
+	print("String database connection", StringDatabaseConnection)
 }

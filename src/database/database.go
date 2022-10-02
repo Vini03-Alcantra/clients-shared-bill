@@ -5,38 +5,18 @@ import (
 	"log"
 	"time"
 
-	"github.com/carrot/go-base-api/environment"
-
+	"github.com/ClientsSharedBill/src/config"
+	"github.com/ClientsSharedBill/src/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var user string
-var password string
-var db string
-var host string
-var port string
-var ssl string
-var timezone string
 var dbConn *gorm.DB
 
-func init() {
-	user = environment.GetEnvVar("POSTGRES_USER")
-	password = environment.GetEnvVar("POSTGRES_PASSWORD")
-	db = environment.GetEnvVar("POSTGRES_DB")
-	host = environment.GetEnvVar("POSTGRES_HOST")
-	port = environment.GetEnvVar("POSTGRES_PORT")
-	ssl = environment.GetEnvVar("POSTGRES_SSL")
-	timezone = environment.GetEnvVar("POSTGRES_TIMEZONE")
-}
-
-func GetDSN() string {
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s", host, user, password, db, port, ssl, timezone)
-}
-
 func Connect() error {
+	print("Connect String", config.StringDatabaseConnection)
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  GetDSN(),
+		DSN:                  config.StringDatabaseConnection,
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{})
 
@@ -53,5 +33,32 @@ func Connect() error {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	dbConn = db
 
+	return err
+}
+
+func GetDatabaseConnection() (*gorm.DB, error) {
+	sqlDB, err := dbConn.DB()
+
+	if err != nil {
+		return dbConn, err
+	}
+
+	if err := sqlDB.Ping(); err != nil {
+		return dbConn, err
+	}
+	AutoMigrate()
+	return dbConn, nil
+}
+
+func AutoMigrate() error {
+	// Auto Migrate database
+	db, connErr := GetDatabaseConnection()
+	if connErr != nil {
+		return connErr
+	}
+
+	// Add required models here
+	err := db.AutoMigrate(&models.Client{})
+	fmt.Print("Database Migrated")
 	return err
 }

@@ -3,20 +3,34 @@ package database
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
-	"github.com/ClientsSharedBill/src/config"
 	"github.com/ClientsSharedBill/src/models"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 var dbConn *gorm.DB
+var StringConexaoBanco = ""
 
 func Connect() error {
-	print("Connect String", config.StringDatabaseConnection)
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	StringConexaoBanco = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_DATABASE"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_SSL"),
+	)
+
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  config.StringDatabaseConnection,
+		DSN:                  StringConexaoBanco,
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{})
 

@@ -35,5 +35,6 @@ func Load() {
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_SSL"),
 	)
+
 	print("String database connection", StringDatabaseConnection)
 }

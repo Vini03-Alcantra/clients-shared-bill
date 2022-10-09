@@ -1,9 +1,19 @@
 package client
 
-import "github.com/gofiber/fiber"
+import (
+	"github.com/ClientsSharedBill/src/database"
+	"github.com/ClientsSharedBill/src/models"
+	"github.com/gofiber/fiber"
+)
 
 func GetClients(c *fiber.Ctx) {
-	c.Send("All books")
+	db := database.Connect()
+	var clients []models.Client
+	db.Find(clients)
+	if len(clients) > 0 {
+		c.JSON(nil)
+	}
+	c.JSON(clients)
 }
 
 func GetClient(c *fiber.Ctx) {

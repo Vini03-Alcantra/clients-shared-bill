@@ -21,11 +21,6 @@ func (x *Client) FillDefaults() {
 	}
 }
 
-func setup(db *gorm.DB) {
-	db.AutoMigrate(&Client{})
-	seed(db)
-}
-
 func seed(db *gorm.DB) {
 	clients := []Client{
 		{ID: "1w2e3r", Name: "João Dória", CPF: "11122233345", Email: "joaodoria@email.com"},

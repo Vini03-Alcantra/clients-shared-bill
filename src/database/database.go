@@ -9,7 +9,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/ClientsSharedBill/src/models"
 	"github.com/joho/godotenv"
 )
 
@@ -47,6 +46,19 @@ func Connect() error {
 
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	dbConn = db
-	dbConn.AutoMigrate(&models.Client{})
+
 	return err
+}
+
+func GetDatabaseConnection() (*gorm.DB, error) {
+	sqlDB, err := dbConn.DB()
+	if err != nil {
+		return dbConn, err
+	}
+
+	if err := sqlDB.Ping(); err != nil {
+		return dbConn, err
+	}
+
+	return dbConn, nil
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -12,15 +11,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var dbConn *gorm.DB
-var StringConnectionDatabase = ""
-
-func Connect() error {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	StringConnectionDatabase = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+func loadVariablesEnvironment() string {
+	var StringConnectionDatabase = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
@@ -28,6 +20,16 @@ func Connect() error {
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_SSL"),
 	)
+
+	return StringConnectionDatabase
+}
+
+func connect() (*gorm.DB, error) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	var StringConnectionDatabase = loadVariablesEnvironment()
 
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  StringConnectionDatabase,
@@ -38,27 +40,14 @@ func Connect() error {
 		log.Fatal(err)
 	}
 
-	sqlDB, err := db.DB()
-
-	sqlDB.SetConnMaxIdleTime(time.Minute * 5)
-
-	sqlDB.SetMaxOpenConns(100)
-
-	sqlDB.SetConnMaxLifetime(time.Hour)
-	dbConn = db
-
-	return err
+	return db, nil
 }
 
 func GetDatabaseConnection() (*gorm.DB, error) {
-	sqlDB, err := dbConn.DB()
+	sqlDB, err := connect()
 	if err != nil {
-		return dbConn, err
+		panic("Failed to create connection with database")
 	}
 
-	if err := sqlDB.Ping(); err != nil {
-		return dbConn, err
-	}
-
-	return dbConn, nil
+	return sqlDB, nil
 }

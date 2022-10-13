@@ -1,29 +1,50 @@
 package client
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/ClientsSharedBill/src/database"
 	"github.com/ClientsSharedBill/src/models"
-	"github.com/gofiber/fiber"
+	"github.com/gin-gonic/gin"
 )
 
-func GetClients(c *fiber.Ctx) {
-	db := database.Connect()
+func GetCloentsAll(c *gin.Context) {
+	c.JSON(http.StatusAccepted, gin.H{
+		"message": "Hello World",
+	})
+}
+
+func GetClients(c *gin.Context) {
 	var clients []models.Client
+	db, connErr := database.GetDatabaseConnection()
+
+	if connErr != nil {
+		log.Panic(connErr)
+		c.JSON(200, gin.H{
+			"message": "Service is unavailable",
+		})
+		return
+	}
 	db.Find(clients)
 	if len(clients) > 0 {
-		c.JSON(nil)
+		c.JSON(200, gin.H{
+			"message": clients,
+		})
 	}
-	c.JSON(clients)
+	c.JSON(200, gin.H{
+		"data": clients,
+	})
 }
 
-func GetClient(c *fiber.Ctx) {
-	c.Send("book")
+func GetClient(c *gin.Context) {
+	c.JSON(200, "book")
 }
 
-func NewClient(c *fiber.Ctx) {
-	c.Send("new book")
+func PostClient(c *gin.Context) {
+	c.JSON(200, "new book")
 }
 
-func DeleteClient(c *fiber.Ctx) {
-	c.Send("delete book")
+func DeleteClient(c *gin.Context) {
+	c.JSON(200, "delete book")
 }

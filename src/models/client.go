@@ -8,8 +8,9 @@ import (
 type Client struct {
 	ID        string         `gorm:"primary_key" json:"id"`
 	Name      string         `db:"name" json:"name"`
-	CPF       string         `db:"area" json:"area"`
-	Email     string         `json:"teacher"`
+	CPF       string         `db:"cpf" json:"cpf"`
+	Email     string         `db:"email" json:"email"`
+	Password  string         `db:"password" json:"password" `
 	CreatedAt int64          `gorm:"autoCreateTime:milli" json:"created_at"`
 	UpdatedAt int64          `gorm:"autoUpdateTime:milli" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`

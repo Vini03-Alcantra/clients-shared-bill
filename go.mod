@@ -7,6 +7,7 @@ require gorm.io/gorm v1.23.10
 require (
 	github.com/andybalholm/brotli v1.0.0 // indirect
 	github.com/carrot/go-base-api v0.0.0-20160525212554-c9ee09ada9fb // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.8.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect

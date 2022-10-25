@@ -43,11 +43,11 @@ func connect() (*gorm.DB, error) {
 	return db, nil
 }
 
-func GetDatabaseConnection() (*gorm.DB, error) {
+func GetDatabaseConnection() *gorm.DB {
 	sqlDB, err := connect()
 	if err != nil {
 		panic("Failed to create connection with database")
 	}
 
-	return sqlDB, nil
+	return sqlDB
 }

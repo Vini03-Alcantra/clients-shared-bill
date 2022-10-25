@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/ClientsSharedBill/src/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,10 +13,15 @@ type AuthController interface {
 }
 
 type authController struct {
+	authService service.AuthService
+	jwtService  service.JWTService
 }
 
-func NewAuthController() AuthController {
-	return &authController{}
+func NewAuthController(authService service.AuthService, jwtService service.JWTService) AuthController {
+	return &authController{
+		authService: authService,
+		jwtService:  jwtService,
+	}
 }
 
 func (c *authController) Login(ctx *gin.Context) {

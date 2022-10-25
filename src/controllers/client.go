@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/ClientsSharedBill/src/database"
@@ -17,15 +16,8 @@ func GetCloentsAll(c *gin.Context) {
 
 func GetClients(c *gin.Context) {
 	var clients []models.Client
-	db, connErr := database.GetDatabaseConnection()
+	db := database.GetDatabaseConnection()
 
-	if connErr != nil {
-		log.Panic(connErr)
-		c.JSON(200, gin.H{
-			"message": "Service is unavailable",
-		})
-		return
-	}
 	db.Find(clients)
 	if len(clients) > 0 {
 		c.JSON(200, gin.H{

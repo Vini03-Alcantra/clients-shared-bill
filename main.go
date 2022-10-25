@@ -24,13 +24,6 @@ func main() {
 		log.Fatal("PORT to running undefined")
 	}
 
-	// router.POST("/api/v1/clients", func(c *gin.Context) {
-	// 	c.JSON(http.StatusCreated, gin.H{
-	// 		"message": "Hello world",
-	// 	})
-	// })
-
-	// routes.SetupRoutes().Run()
 	fmt.Printf("Listening on port %d", PORT)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", PORT), r))
 }

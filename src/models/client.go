@@ -11,6 +11,7 @@ type Client struct {
 	CPF       string         `db:"cpf" json:"cpf"`
 	Email     string         `db:"email" json:"email"`
 	Password  string         `db:"password" json:"password" `
+	Token     string         `gorm:"->;<-;not null" json:"-"`
 	CreatedAt int64          `gorm:"autoCreateTime:milli" json:"created_at"`
 	UpdatedAt int64          `gorm:"autoUpdateTime:milli" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`

@@ -12,7 +12,7 @@ import (
 
 type AuthService interface {
 	VerifyCredentials(email string, password string) interface{}
-	CreateClient(client dto.ClientCreateDTO) models.Client
+	CreateClient(client dto.RegisterDTO) models.Client
 	FindByEmail(email string) models.Client
 	IsDuplicateEmail(email string) bool
 }
@@ -39,7 +39,7 @@ func (service *authService) VerifyCredentials(email string, password string) int
 	return false
 }
 
-func (service *authService) CreateClient(client dto.ClientCreateDTO) models.Client {
+func (service *authService) CreateClient(client dto.RegisterDTO) models.Client {
 	clientToCreate := models.Client{}
 	err := smapping.FillStruct(&clientToCreate, smapping.MapFields(&client))
 

@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 
+	"github.com/ClientsSharedBill/src/models"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
-	"github.com/joho/godotenv"
 )
 
 func loadVariablesEnvironment() string {
@@ -37,8 +37,10 @@ func connect() (*gorm.DB, error) {
 	}), &gorm.Config{})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to create a connection to database", err)
 	}
+
+	db.AutoMigrate(&models.Client{})
 
 	return db, nil
 }
@@ -50,4 +52,13 @@ func GetDatabaseConnection() *gorm.DB {
 	}
 
 	return sqlDB
+}
+
+func CloseDatabaseConnection(db *gorm.DB) {
+	dbSQL, err := db.DB()
+	if err != nil {
+		panic("Failed to close connection from database")
+	}
+
+	dbSQL.Close()
 }

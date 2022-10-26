@@ -42,11 +42,11 @@ func (service *authService) VerifyCredentials(email string, password string) int
 func (service *authService) CreateClient(client dto.RegisterDTO) models.Client {
 	clientToCreate := models.Client{}
 	err := smapping.FillStruct(&clientToCreate, smapping.MapFields(&client))
-
 	if err != nil {
 		log.Fatalf("Failed map %v", err)
 	}
-	res := service.clientRepository.InsertClient(clientToCreate)
+	clientGenerate := models.FillDefaults(clientToCreate)
+	res := service.clientRepository.InsertClient(clientGenerate)
 	return res
 }
 

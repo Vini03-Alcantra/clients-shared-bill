@@ -13,7 +13,10 @@ type ClientRepository interface {
 	UpdateClient(client models.Client) models.Client
 	VerifyCredentials(email string, password string) interface{}
 	IsDuplicateEmail(email string) (tx *gorm.DB)
+	FindByID(id string) models.Client
 	FindByEmail(email string) models.Client
+	GetAllClients() []models.Client
+	DeleteClients(c models.Client)
 }
 
 type clientConnection struct {
@@ -61,6 +64,12 @@ func (db *clientConnection) FindByEmail(email string) models.Client {
 	return client
 }
 
+func (db *clientConnection) FindByID(id string) models.Client {
+	var client models.Client
+	db.connection.Where("id = ?", id).Take(&client)
+	return client
+}
+
 func (db *clientConnection) IsDuplicateEmail(email string) (tx *gorm.DB) {
 	var client models.Client
 	return db.connection.Where("email = ?", email).Take(&client)
@@ -74,4 +83,14 @@ func hashAndSalt(pwd []byte) string {
 	}
 
 	return string(hash)
+}
+
+func (db *clientConnection) GetAllClients() []models.Client {
+	var clients []models.Client
+	db.connection.Find(&clients)
+	return clients
+}
+
+func (db *clientConnection) DeleteClients(c models.Client) {
+	db.connection.Delete(&c)
 }

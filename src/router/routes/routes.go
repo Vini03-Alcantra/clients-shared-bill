@@ -2,7 +2,6 @@ package routes
 
 import (
 	"github.com/ClientsSharedBill/src/controllers"
-	client "github.com/ClientsSharedBill/src/controllers"
 	"github.com/ClientsSharedBill/src/database"
 	"github.com/ClientsSharedBill/src/middleware"
 	"github.com/ClientsSharedBill/src/repository"
@@ -12,11 +11,13 @@ import (
 )
 
 var (
-	db               *gorm.DB                    = database.GetDatabaseConnection()
-	clientRepository repository.ClientRepository = repository.NewClientRepository(db)
-	jwtService       service.JWTService          = service.NewJWTService()
-	authService      service.AuthService         = service.NewAuthService(clientRepository)
-	authController   controllers.AuthController  = controllers.NewAuthController(authService, jwtService)
+	db               *gorm.DB                     = database.GetDatabaseConnection()
+	clientRepository repository.ClientRepository  = repository.NewClientRepository(db)
+	jwtService       service.JWTService           = service.NewJWTService()
+	authService      service.AuthService          = service.NewAuthService(clientRepository)
+	clientService    service.ClientService        = service.NewClientService(clientRepository)
+	authController   controllers.AuthController   = controllers.NewAuthController(authService, jwtService)
+	clientController controllers.ClientController = controllers.NewClientController(clientService, jwtService)
 )
 
 func SetupRoutes() *gin.Engine {
@@ -30,10 +31,8 @@ func SetupRoutes() *gin.Engine {
 
 	userRoutes := router.Group("api/user", middleware.AuthorizeJWT(jwtService))
 	{
-		userRoutes.GET("/api/v1/clients", client.GetCloentsAll)
-		userRoutes.GET("/api/v1/clients/:id", client.GetClient)
-		userRoutes.POST("/api/v1/clients", client.PostClient)
-		userRoutes.DELETE("/api/v1/clients/:id", client.DeleteClient)
+		userRoutes.PUT("/api/v1/clients/:id", clientController.Update)
+		userRoutes.DELETE("/api/v1/clients/:id", clientController.DeleteClient)
 	}
 
 	return router

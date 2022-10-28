@@ -50,6 +50,22 @@ func (c *clientController) Update(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
+	authHeader := context.GetHeader("Authorization")
+	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if errToken != nil {
+		panic(errToken.Error())
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	clientID := fmt.Sprintf("%v", claims["clientID"])
+
+	if c.clientService.IsAllowedToEdit(clientID) {
+		result := c.clientService.Update(clientUpdateDTO)
+		res := helpers.BuildResponse(true, "OK", result)
+		context.JSON(http.StatusOK, res)
+	} else {
+		res := helpers.BuildErrorResponse("You dont have permission", "You are not the owner", helpers.EmptyObj{})
+		context.JSON(http.StatusForbidden, res)
+	}
 }
 
 func (c *clientController) DeleteClient(context *gin.Context) {

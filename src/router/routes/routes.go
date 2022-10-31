@@ -29,10 +29,10 @@ func SetupRoutes() *gin.Engine {
 		authRoutes.POST("/register", authController.Register)
 	}
 
-	userRoutes := router.Group("api/user", middleware.AuthorizeJWT(jwtService))
+	userRoutes := router.Group("api/clients", middleware.AuthorizeJWT(jwtService))
 	{
-		userRoutes.PUT("/api/v1/clients/:id", clientController.Update)
-		userRoutes.DELETE("/api/v1/clients/:id", clientController.DeleteClient)
+		userRoutes.PUT("/", clientController.Update)
+		userRoutes.DELETE("/:id", clientController.DeleteClient)
 	}
 
 	return router

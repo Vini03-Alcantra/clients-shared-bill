@@ -29,10 +29,12 @@ func NewClientService(clientRepo repository.ClientRepository) ClientService {
 
 func (service *clientService) Update(client dto.ClientUpdateDTO) models.Client {
 	clientToUpdate := models.Client{}
-	err := smapping.FillStruct(&clientToUpdate, smapping.MapFields(&service))
+	fmt.Println("client before", client)
+	err := smapping.FillStruct(&clientToUpdate, smapping.MapFields(&client))
 	if err != nil {
 		log.Fatalf("Failed map %v:", err)
 	}
+	fmt.Println("Client after", clientToUpdate)
 	updateClient := service.clientRepository.UpdateClient(clientToUpdate)
 	return updateClient
 }

@@ -45,25 +45,27 @@ func (c *clientController) GetClientsAll(context *gin.Context) {
 func (c *clientController) Update(context *gin.Context) {
 	var clientUpdateDTO dto.ClientUpdateDTO
 	errDTO := context.ShouldBind(&clientUpdateDTO)
+
 	if errDTO != nil {
 		res := helpers.BuildErrorResponse("Failed to process request", errDTO.Error(), helpers.EmptyObj{})
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
+
 	authHeader := context.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
 		panic(errToken.Error())
 	}
-	claims := token.Claims.(jwt.MapClaims)
-	clientID := fmt.Sprintf("%v", claims["clientID"])
 
+	claims := token.Claims.(jwt.MapClaims)
+	clientID := fmt.Sprintf("%v", claims["user_id"])
 	if c.clientService.IsAllowedToEdit(clientID) {
 		result := c.clientService.Update(clientUpdateDTO)
 		res := helpers.BuildResponse(true, "OK", result)
 		context.JSON(http.StatusOK, res)
 	} else {
-		res := helpers.BuildErrorResponse("You dont have permission", "You are not the owner", helpers.EmptyObj{})
+		res := helpers.BuildErrorResponse("You dont have any permission", "You aren't the owner", helpers.EmptyObj{})
 		context.JSON(http.StatusForbidden, res)
 	}
 }

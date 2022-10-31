@@ -84,7 +84,7 @@ func (c *clientController) DeleteClient(context *gin.Context) {
 		panic(errToken.Error())
 	}
 	claims := token.Claims.(jwt.MapClaims)
-	clientID := fmt.Sprintf("%v", claims["client_id"])
+	clientID := fmt.Sprintf("%v", claims["user_id"])
 	if c.clientService.IsAllowedToEdit(clientID) {
 		c.clientService.Delete(client)
 		res := helpers.BuildResponse(true, "Deleted", helpers.EmptyObj{})
